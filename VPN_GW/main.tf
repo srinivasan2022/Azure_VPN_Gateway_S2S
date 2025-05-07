@@ -38,16 +38,6 @@ module "spoke" {
   vm_name = "spoke-vm"
 }
 
-module "peering" {
-  source = "../modules/Peering"
-  hub_rg_name = module.hub.rg.name
-  spoke_rg_name = module.spoke.rg.name
-  hub_vnet_name = module.hub.vnet.name
-  spoke_vnet_id = module.spoke.vnet.id
-  spoke_vnet_name = module.spoke.vnet.name
-  hub_vnet_id = module.hub.vnet.id
-  depends_on = [ module.hub , module.spoke ]
-}
 
 module "onprem_vpn" {
   source     = "../modules/Gw"
@@ -56,9 +46,13 @@ module "onprem_vpn" {
   gateway_subnet_id = module.onprem.GatewaySubnet.id
   public_ip_id = module.onprem.vpn_gateway_ip.id
   gw_address = module.hub.vpn_gateway_ip.ip_address
-  address_space = module.hub.vnet.address_space[0]
+  //address_space = module.hub.vnet.address_space[0]
+  address_space      = [
+    module.hub.vnet.address_space[0],
+    module.spoke.vnet.address_space[0]
+  ]
   connection_name = "toHub"
-  depends_on = [ module.onprem , module.hub ]
+  depends_on = [ module.onprem , module.hub , module.spoke]
 }
 
 module "hub_vpn" {
@@ -68,8 +62,23 @@ module "hub_vpn" {
   gateway_subnet_id = module.hub.GatewaySubnet.id
   public_ip_id = module.hub.vpn_gateway_ip.id
   gw_address = module.onprem.vpn_gateway_ip.ip_address
-  address_space = module.onprem.vnet.address_space[0]
+  //address_space = module.onprem.vnet.address_space[0]
+  address_space      = [
+    module.onprem.vnet.address_space[0],
+    module.spoke.vnet.address_space[0]
+  ]
   connection_name = "toOnprem"
-  depends_on = [ module.hub , module.onprem ]
+  depends_on = [ module.hub , module.onprem , module.spoke]
+}
+
+module "peering" {
+  source = "../modules/Peering"
+  hub_rg_name = module.hub.rg.name
+  spoke_rg_name = module.spoke.rg.name
+  hub_vnet_name = module.hub.vnet.name
+  spoke_vnet_id = module.spoke.vnet.id
+  spoke_vnet_name = module.spoke.vnet.name
+  hub_vnet_id = module.hub.vnet.id
+  depends_on = [ module.hub , module.spoke , module.onprem_vpn , module.hub_vpn ]
 }
 
