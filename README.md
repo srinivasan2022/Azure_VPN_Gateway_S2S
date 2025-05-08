@@ -1,19 +1,3 @@
-# Azure_VPN_Gateway
-
-Azure VPN Gateway is a service that can be used to send encrypted traffic between an Azure virtual network and on-premises locations over the public Internet. You can also use VPN Gateway to send encrypted traffic between Azure virtual networks over the Microsoft network. VPN Gateway uses a specific type of Azure virtual network gateway called a VPN gateway. Multiple connections can be created to the same VPN gateway. When you create multiple connections, all VPN tunnels share the available gateway bandwidth.
-
-## Why use VPN Gateway?
-
-Here are some of the key scenarios for VPN Gateway:
-
-Send encrypted traffic between an Azure virtual network and on-premises locations over the public Internet. You can do this by using the following types of connections:
-
-##### Site-to-site connection: 
-A cross-premises IPsec/IKE VPN tunnel connection between the VPN gateway and an on-premises VPN device.
-
-##### Point-to-site connection: 
-VPN over OpenVPN, IKEv2, or SSTP. This type of connection lets you connect to your virtual network from a remote location, such as from a conference or from home.
-
 # Azure VPN Gateway Hybrid Network (Hub-Spoke + On-Prem)
 
 This repository automates the provisioning of a hybrid network topology in Azure using Terraform, demonstrating both Site-to-Site (S2S) and Point-to-Site (P2S) VPN connectivity between an on-premises network and a Hub-and-Spoke architecture .
